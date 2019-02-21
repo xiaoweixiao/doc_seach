@@ -5,6 +5,7 @@
 #include<vector>
 #include<iostream>
 #include<fstream>
+#include"../common/util.hpp"
 #include<boost/filesystem/path.hpp>
 #include<boost/filesystem/operations.hpp>
 
@@ -43,6 +44,57 @@ bool EnumFile(const std::string& input_path,std::vector<std::string>* file_list)
   return true;
 }
 
+bool ParseTitle(const std::string& html,std::string* title)
+{
+  //<title>标题</title>
+  size_t begin = html.find("<title>");
+  if(begin == std::string::npos){
+    std::cout<<"<title> not fouund " << std::endl;
+    return false;
+  }
+  size_t end = html.find("</title>");
+  if(end == std::string::npos){
+    std::cout << "</title> not found" << std::endl;
+    return false;
+  }
+
+  begin += std::string("<title>").size();
+  if(begin >= end){
+    std::cout << "begin end error" << std::endl;
+    return false;
+  }
+  *title = html.substr(begin,end-begin);
+  return true;
+}
+
+bool ParseFile(const std::string& file_path,DocInfo*doc_info)
+{
+  //1.打开文件，读取文件内容
+  std::string html;
+  bool ret = FileUtil::Read(file_path,&html);
+  if(!ret){
+    std::cout << "Read file failed,file_path=" << file_path << std::endl; 
+    return false;
+  }
+  //2.解析标题
+  ret = ParseTitle(html,&doc_info->title);
+  if(!ret){
+    std::cout << "ParseTitle failed,file_path=" << file_path << std::endl;
+    return false;
+  }
+  //3.解析正文，并去除标签
+  ret = ParseContent(html,&doc_info->content);
+  if(!ret){
+    std::cout << "ParseContent failed,file_path=" << file_path << std::endl;
+    return false;
+  }
+  //4.解析url
+  ret = ParseUrl(html,&doc_info->url);
+  if(!ret){
+    std::cout << "ParseUrl failed,file_path=" << file_path << std::endl;
+    return false;
+  }
+}
 
 int main()
 {
@@ -55,7 +107,7 @@ int main()
   }
   for(const auto& file_path:file_list)
     std::cout << file_path << std::endl;
-/*
+
   std::ofstream output_file(g_output_path.c_str());
   if(!output_file.is_open()){
     std::cout << "open output_file failed! g_output_path=" << g_output_path <<std::endl;
@@ -74,6 +126,6 @@ int main()
     //3、把分析结果合并到raw_input文件中
     WriteOutput(info,output_file);
   }
-  output_file.close();*/
+  output_file.close();
   return 0;
 }
