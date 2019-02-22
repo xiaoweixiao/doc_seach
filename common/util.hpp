@@ -1,6 +1,12 @@
-#pragma once 
 #include<string>
+#include<vector>
 #include<fstream>
+#include<iostream>
+#include<unordered_map>
+#include<boost/algorithm/string.hpp>
+#include<boost/filesystem/path.hpp>
+#include<boost/filesystem/operations.hpp>
+#include"../cppjieba/include/cppjieba/Jieba.hpp"
 
 class FileUtil{
   public:
@@ -30,4 +36,15 @@ class FileUtil{
       file.close();
       return true;
     }
-};
+};//end FileUtil 
+
+
+class StringUtil{
+  public:
+    //基于boost的字符串切分来实现
+    static void Split(const std::string&input,std::vector<std::string>* output,const std::string& split_char)
+    {
+      boost::split(*output,input,boost::is_any_of(split_char),boost::token_compress_off);
+      //token_compress_off关闭压缩切分            aaa\3\3ccc    切分成3个字符串   
+    }
+};//end StringUtil 

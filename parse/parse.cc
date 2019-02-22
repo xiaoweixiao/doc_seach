@@ -1,13 +1,7 @@
 //数据处理模块，把html进行处理，去标签
 //把所有html文件合并成一个文件，这个新文件的一行是一个原来的html
 //解析html文件，解析出标题、正文、url
-#include<string>
-#include<vector>
-#include<iostream>
-#include<fstream>
 #include"../common/util.hpp"
-#include<boost/filesystem/path.hpp>
-#include<boost/filesystem/operations.hpp>
 
 const std::string g_input_path = "../data/input";
 const std::string g_output_path = "../data/tmp/raw_input";
