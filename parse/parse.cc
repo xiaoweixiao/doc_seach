@@ -19,7 +19,7 @@ struct DocInfo{
   std::string url;
 };
 
-//input_path是html文档，
+//input_path是html文档，枚举文件
 bool EnumFile(const std::string& input_path,std::vector<std::string>* file_list)
 {
   namespace fs = boost::filesystem;
@@ -59,11 +59,46 @@ bool ParseTitle(const std::string& html,std::string* title)
   }
 
   begin += std::string("<title>").size();
-  if(begin >= end){
+  if(begin > end){
     std::cout << "begin end error" << std::endl;
     return false;
   }
   *title = html.substr(begin,end-begin);
+  return true;
+}
+
+bool ParseContent(const std::string& html,std::string* content)
+{
+  //除过标签就是正文，舍弃<中的内容>
+  bool is_content = true;
+  for(auto c:html)
+  {
+    if(is_content){
+      if(c == '<'){
+        is_content = false;
+      }else{//正文
+        if(c == '\n')
+          c = ' ';
+        
+        content->push_back(c);
+      }
+    }else{//标签状态
+      if(c == '>'){
+        is_content = true;
+      }
+    }
+  }
+  return true;
+}
+
+//boost文档的url特点形如https://www.boost.org/doc/libs/1_53_0/doc/  html/thread.html
+//前半部分是boost文档共同的路径名，后半部分是EnumFile的结果删掉../data/input得到html/thread.html 
+bool ParseUrl(const std::string&file_path,std::string*url)
+{
+  std::string prefix = "//www.boost.org/doc/libs/1_53_0/doc/";
+  std::string tail = file_path.substr(g_input_path.size());
+  *url = prefix + tail;
+
   return true;
 }
 
@@ -89,11 +124,21 @@ bool ParseFile(const std::string& file_path,DocInfo*doc_info)
     return false;
   }
   //4.解析url
-  ret = ParseUrl(html,&doc_info->url);
+  ret = ParseUrl(file_path,&doc_info->url);
   if(!ret){
     std::cout << "ParseUrl failed,file_path=" << file_path << std::endl;
     return false;
   }
+  return true;
+}
+
+//C++中的iostream和fstream等这些对象都是禁止拷贝的
+void WriteOutput(const DocInfo& doc_info,std::ofstream& file)
+{
+  //输出到file中，输出的是行文本文件，一行容一个html文件
+  std::string line = doc_info.title  + "\3" + doc_info.url + "\3" + doc_info.content + "\n";
+  //选择不可见字符"\3"作为分隔符
+  file.write(line.c_str(),line.size());
 }
 
 int main()
@@ -105,8 +150,6 @@ int main()
     std::cout << "EnumFile failed" << std::endl;
     return 1;
   }
-  for(const auto& file_path:file_list)
-    std::cout << file_path << std::endl;
 
   std::ofstream output_file(g_output_path.c_str());
   if(!output_file.is_open()){
