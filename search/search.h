@@ -10,9 +10,12 @@ namespace search{
     std::string url;
   };
 
+  //某个词的权重
   struct Weight{
     uint64_t doc_id;
     int weight;//权重
+
+    std::string key;
   };
 
 
@@ -36,7 +39,24 @@ private:
   void BuildInverted(const Doc_Info& doc_info);
   };
 
+
+
   //搜索模块
-  class Search{
-  };
+class Search{
+private:
+  Index* index_;
+public:
+  Search()
+    :index_(new Index()){}
+  ~Search()
+  {
+    delete index_;
+  }
+  //加载索引
+  bool Init(const std::string&input_path);
+  //通过特定格式在result字符串中表示搜索结果
+  bool Searchs(const std::string& query,std::string* result);
+private:
+  std::string GetDesc(const std::string& content,const std::string& key);
+  };//end of the class Search 
 }//end search

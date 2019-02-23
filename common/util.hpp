@@ -8,6 +8,8 @@
 #include<boost/filesystem/operations.hpp>
 #include"../cppjieba/include/cppjieba/Jieba.hpp"
 
+#include<algorithm>
+#include<jsoncpp/json/json.h>
 class FileUtil{
   public:
     static bool Read(const std::string&file_path,std::string* content)
