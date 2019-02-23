@@ -1,9 +1,13 @@
-.PHONY:all 
+FLAG=-std=c++11 -lboost_system -lboost_filesystem -ljsoncpp
 
-all:main 
+.PHONY:all 
+all:main libsearch.so
 
 test:test.cc search.h search.cc 
-	g++ $^ -o $@ -std=c++11 -lboost_system -lboost_filesystem -ljsoncpp
+	g++ $^ -o $@ ${FLAG}
 
 main:main.cc search.h search.cc 
-	g++ $^ -o $@ -std=c++11 -lboost_system -lboost_filesystem -ljsoncpp
+	g++ $^ -o $@ ${FLAG}
+
+libsearch.so:search.h search.cc 
+	g++ search.cc -shared -fPIC -o libsearch.so ${FLAG}
