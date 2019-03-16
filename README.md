@@ -21,4 +21,4 @@
 2.根据权重排序，根据Weight结构体的doc_id从正排中得到Doc_Info。Json::FastWriter实现快速序列化。
 
 查询filesystem的结果页面
-
+<img src="https://github.com/xiaoweixiao/doc_search/blob/master/common/%E5%86%92%E7%83%9F%E6%B5%8B%E8%AF%95.png">
