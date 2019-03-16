@@ -1,10 +1,7 @@
-FLAG=-std=c++11 -lboost_system -lboost_filesystem -ljsoncpp
+FLAG=-std=c++11 -lboost_system -lboost_filesystem -I /usr/include -ljsoncpp
 
 .PHONY:all 
 all:main libsearch.so
-
-test:test.cc search.h search.cc 
-	g++ $^ -o $@ ${FLAG}
 
 main:main.cc search.h search.cc 
 	g++ $^ -o $@ ${FLAG}

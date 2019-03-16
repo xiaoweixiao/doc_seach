@@ -111,8 +111,6 @@ namespace search{
   }
 
 
-
-
   //搜索实现
   bool Search::Init(const std::string& input_path)
   {
@@ -135,12 +133,7 @@ namespace search{
       }
       all_tokens_result.insert(all_tokens_result.end(),inverted_list->begin(),inverted_list->end());
       //将得到的inverted_list数组整体尾插到all_tokens_result数组中
-
-
       //合并有序链表，去除重复项
-
-
-
     }
     //3.排序
     std::sort(all_tokens_result.begin(),all_tokens_result.end(),[](const Weight& w1,const Weight& w2){
