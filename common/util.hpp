@@ -6,7 +6,7 @@
 #include<boost/algorithm/string.hpp>
 #include<boost/filesystem/path.hpp>
 #include<boost/filesystem/operations.hpp>
-#include"../cppjieba/Jieba.hpp"
+#include"../cppjieba/include/cppjieba/Jieba.hpp"
 
 #include<algorithm>
 #include<jsoncpp/json/json.h>
